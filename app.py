@@ -21,3 +21,21 @@ tickerDef = data.history(period='1d', start=start_date, end=end_date)
 fig = px.line(tickerDef, x = tickerDef.index, y = tickerDef['Close'], title = data.info['longName'])
 st.plotly_chart(fig)
 
+
+business_name = data.info['longName']
+st.write(business_name)
+
+# Tabs
+pricing_data, fundamental_data = st.tabs(["Business Details", "Fundamental Data"])
+
+with pricing_data:
+  st.subheader('Business Details')
+  business_summary = data.info['longBusinessSummary']
+  st.info(business_summary)
+
+with fundamental_data:
+  st.subheader('Fundamental Data')
+  tickerDef
+
+
+data.info
