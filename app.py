@@ -31,7 +31,6 @@ with col1:
   company = yf.Ticker(ticker) 
 # Current Price #
 #col2.metric("Current Price", f'${company.info['currentPrice']}', f"${(company.info['currentPrice'] - company.basic_info['lastPrice']):.3f}")
-if company.info['currentPrice']:
   col2.metric("Current Price", f'${company.info['currentPrice']}', get_trend(company))
 
 # Company name # 
