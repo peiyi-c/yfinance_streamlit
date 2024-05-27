@@ -35,7 +35,7 @@ with col1:
   col2.metric("Current Price", f"${infos.get('currentPrice', '')}", get_trend(company))
 
 # Company name # 
-st.title(company.info['longName'])
+st.title(infos.get('longName', ''))
 
 # 1. Subheader # 
 st.subheader('Performance')
