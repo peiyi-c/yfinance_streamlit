@@ -1,3 +1,3 @@
 ## Streamlit - yfinance
 
-Deploy: https://peiyi-c-streamlit-yfinance-app-y6hcxo.streamlit.app/
+Please click [the deployment link](https://peiyi-c-streamlit-yfinance-app-y6hcxo.streamlit.app/)
