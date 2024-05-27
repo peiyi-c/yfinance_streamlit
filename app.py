@@ -9,7 +9,7 @@ from dateutil.relativedelta import relativedelta
 st.set_page_config(page_title="Stock Dashboard", page_icon="🧊", layout="centered")
 
 # custom styles
-st.markdown('<style>h3{font-size:1.65rem;opacity:0.3;}div.block-container{padding:1rem auto;} div.element-container{margin: 0rem; padding: 0rem;}div[role="tablist"]{justify-content: space-between;}button[role="tab"]{padding: 1rem; border-radius: 10px;}button[role="tab"][aria-selected="true"]{background: #E0FBE2;}button[role="tab"] p, summary{color:#333333; font-weight:600;} summary:hover span{color:#ACE1AF; font-weight:bold;} div[role="presentation"]{background:none;} div[role="alert"]{background:#F6F5F250;color:#5AB2FF;} a{color:rgb(49, 51, 63) !important; text-decoration:none;} a:hover{color:#ACE1AF !important; text-decoration:none;} div[data-baseweb="select"]>div{border-color: #D2E9E9 !important; box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;}div[data-testid="stTable"]{padding: 7px 0 0 0;}table{font-family:"Source Sans Pro", sans-serif;text-align:left;border-radius: 10px;}thead{display:none;}.no-data{padding: 1.75rem 0;text-align: left; color: rgb(49, 51, 63); font-weight: bold;} .tab-num{font-size: 2.25rem; color: rgb(49, 51, 63);}</style>', unsafe_allow_html = True)
+st.markdown('<style>h3{font-size:1.65rem;opacity:0.3;}div.block-container{padding:1rem auto;} div.element-container{margin: 0rem; padding: 0rem;}div[role="tablist"]{justify-content: space-between;}button[role="tab"]{padding: 1rem; border-radius: 10px;}button[role="tab"][aria-selected="true"]{background: #E0FBE2;}button[role="tab"] p, summary{color:#333333; font-weight:600;} summary:hover span{color:#ACE1AF; font-weight:bold;} div[role="presentation"]{background:none;} div[role="alert"]{background:#F6F5F250;color:#5AB2FF;} a{color:rgb(49, 51, 63) !important; text-decoration:none;} a:hover{color:#ACE1AF !important; text-decoration:none;} div[data-baseweb="select"]>div{border-color: #D2E9E9 !important; box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;}div[data-testid="stTable"]{padding: 7px 0 0 0;}table{font-family:"Source Sans Pro", sans-serif;text-align:left;border-radius: 10px;}.no-data{padding: 1.75rem 0;text-align: left; color: rgb(49, 51, 63); font-weight: bold;} .tab-num{font-size: 2.25rem; color: rgb(49, 51, 63);}</style>', unsafe_allow_html = True)
 
 # Title #   
 st.subheader('Stock Dashboard')  
@@ -140,21 +140,19 @@ else:
   update_axis_names(fig, 'Day', 'Close Price')
   st.plotly_chart(fig, use_container_width = True)
  
-# Divider #
-st.divider()
-
-# Basic Infos #
+# Basic Infos Tabs #
 basic_info = company.basic_info
-# Tabs #
-day_high, day_low, year_high, year_low= st.tabs(['Day High',' Day Low',' Year High','Year Low'])
-with day_high:
-  st.markdown(f"<p class='tab-num'>$ {round(basic_info['dayHigh'], 3)}</p>", unsafe_allow_html=True)
-with day_low:
-  st.markdown(f"<p class='tab-num'>$ {round(basic_info['dayLow'], 3)}</p>", unsafe_allow_html=True)
-with year_high:
-  st.markdown(f"<p class='tab-num'>$ {round(basic_info['yearHigh'], 3)}</p>", unsafe_allow_html=True)
-with year_low:
-  st.markdown(f"<p class='tab-num'>$ {round(basic_info['yearLow'], 3)}</p>", unsafe_allow_html=True)
+if basic_info['dayHigh'] is not None:
+  st.divider()
+  day_high, day_low, year_high, year_low= st.tabs(['Day High',' Day Low',' Year High','Year Low'])
+  with day_high:
+    st.markdown(f"<p class='tab-num'>$ {round(basic_info['dayHigh'], 3)}</p>", unsafe_allow_html=True)
+  with day_low:
+    st.markdown(f"<p class='tab-num'>$ {round(basic_info['dayLow'], 3)}</p>", unsafe_allow_html=True)
+  with year_high:
+    st.markdown(f"<p class='tab-num'>$ {round(basic_info['yearHigh'], 3)}</p>", unsafe_allow_html=True)
+  with year_low:
+    st.markdown(f"<p class='tab-num'>$ {round(basic_info['yearLow'], 3)}</p>", unsafe_allow_html=True)
 
 # Divider #
 st.divider()
@@ -162,11 +160,14 @@ st.divider()
 # Display company basic information
 st.subheader("Company Information")
 st.markdown(f"**Company Name:** {company.info['longName']}")
-st.markdown(f"**Sector:** {infos.get('sector', '')}")
-st.markdown(f"**Website:** {infos.get('website', '')}")
-st.markdown("<p style='margin-bottom:0;font-weight:600;'>Address:</p>", unsafe_allow_html=True)
-st.markdown(f"<span>{infos.get('address1', 'N/A')}<br/> {infos.get('city', '')}<br/> {infos.get('state', '')}  {infos.get('zip', '')}  {infos.get('country', '')}</span>", unsafe_allow_html=True)
-if infos['longBusinessSummary']:
+if infos.get('sector') is not None:
+  st.markdown(f"**Sector:** {infos.get('sector', '')}")
+if infos.get('website') is not None:
+  st.markdown(f"**Website:** {infos.get('website', '')}")
+if infos.get('address1') is not None:
+  st.markdown("<p style='margin-bottom:0;font-weight:600;'>Address:</p>", unsafe_allow_html=True)
+st.markdown(f"<span>{infos.get('address1', '')}<br/> {infos.get('city', '')}<br/> {infos.get('state', '')}  {infos.get('zip', '')}  {infos.get('country', '')}</span>", unsafe_allow_html=True)
+if infos.get('longBusinessSummary') is not None:
   st.markdown("<p style='margin-bottom:3px;font-weight:600;'>Description:</p>", unsafe_allow_html=True)
   with st.expander("Read more"):
     st.info(infos.get('longBusinessSummary', ''))
@@ -182,22 +183,29 @@ st.divider()
 st.subheader("Key Metrics")
 col4, col5 = st.columns((2))
 with col4:
-   st.metric(label="Market Cap", value=f"$ {infos.get('marketCap', 'N/A'):,}")
-   st.metric(label="52 Week High", value=f"$ {infos.get('fiftyTwoWeekHigh', 'N/A'):,}")
-   st.metric(label="52 Week Low", value=f"$ {infos.get('fiftyTwoWeekLow', 'N/A'):,}")
+   if infos.get('marketCap') is not None:
+     st.metric(label="Market Cap", value=f"$ {infos.get('marketCap', ''):,}")
+   if infos.get('fiftyTwoWeekHigh') is not None:
+    st.metric(label="52 Week High", value=f"$ {infos.get('fiftyTwoWeekHigh', ''):,}")
+   if infos.get('fiftyTwoWeekLow') is not None:
+     st.metric(label="52 Week Low", value=f"$ {infos.get('fiftyTwoWeekLow', ''):,}")
 with col5: 
-  st.metric(label="Revenue", value=f"${ infos.get('totalRevenue', 'N/A'):,}")
-  st.metric(label="EBITDA", value=f"${ infos.get('ebitda', 'N/A'):,}")
-  st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', 'N/A'):,}")
+  if infos.get('totalRevenue') is not None:
+   st.metric(label="Revenue", value=f"${ infos.get('totalRevenue', ''):,}")
+  if infos.get('ebitda') is not None:
+    st.metric(label="EBITDA", value=f"${ infos.get('ebitda', ''):,}")
+  if infos.get('netIncomeToCommon') is not None:
+   st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
 
-# Dividends # 
-if not company.actions.empty:
-  st.markdown("<p style='margin: 0;font-size:14px; color:rgb(49, 51, 6);'>Dividend</p>", unsafe_allow_html=True)
+# Actions # 
+actions = company.actions
+if not actions.empty:
+  st.markdown("<p style='margin-bottom: 7px;font-size:14px; color:rgb(49, 51, 6);'>Acitons</p>", unsafe_allow_html=True)
   #format table..
-  actions = company.actions.iloc[:, :-1]
   actions.index = actions.index.date
   actions['Dividends'] = actions['Dividends'].apply(lambda x: f"$ {x:.2f}")
-  st.table(actions)
+  actions['Stock Splits'] = actions['Stock Splits'].astype(int)
+  st.write(actions)
 
 #basic_info
 
