@@ -29,9 +29,10 @@ with col1:
   ticker = st.selectbox('Select a Stock', ticker_name_list) 
   # Retrieve Data
   company = yf.Ticker(ticker) 
+  infos = company.info
 # Current Price #
 #col2.metric("Current Price", f'${company.info['currentPrice']}', f"${(company.info['currentPrice'] - company.basic_info['lastPrice']):.3f}")
-  col2.metric("Current Price", f"${company.info['currentPrice']}", get_trend(company))
+  col2.metric("Current Price", f"${infos.get('currentPrice', '')}", get_trend(company))
 
 # Company name # 
 st.title(company.info['longName'])
@@ -160,7 +161,6 @@ st.divider()
 
 # Display company basic information
 st.subheader("Company Information")
-infos = company.info
 st.markdown(f"**Company Name:** {company.info['longName']}")
 st.markdown(f"**Sector:** {infos.get('sector', '')}")
 st.markdown(f"**Website:** {infos.get('website', '')}")
