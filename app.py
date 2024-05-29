@@ -17,18 +17,21 @@ st.subheader('Stock Dashboard')
 col1, col2 = st.columns((2))
 # Selectbox: Ticker #
 
-  
+ticker = ''
+
 with col1:
   ticker_name_list = pd.read_csv('./ticker_names.txt')
   ticker = st.selectbox('Select a Stock', ticker_name_list) 
-  # ============= Retrieve Data ==============
-  company = yf.Ticker(ticker) 
-  # ============== Company Data ==============
-  infos = company.info
-  basic_info = company.basic_info
-  financials = company.financials
-  cashflow = company.cashflow
-   # =========================================
+
+# ============= Retrieve Data ==============
+company = yf.Ticker(ticker) 
+# ============== Company Data ==============
+infos = company.info
+basic_info = company.basic_info
+financials = company.financials
+cashflow = company.cashflow
+ # =========================================
+ 
 # Current Price #
 col2.metric("Current Price", f"${infos.get('currentPrice', '')}")
 
