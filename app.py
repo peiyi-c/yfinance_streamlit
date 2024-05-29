@@ -146,28 +146,28 @@ with custom_period:
 
 with day_high:
   if 'dayHigh'in basic_info:
-    dayHigh = round(basic_info['dayHigh'], 3)
+    dayHigh = round(float(basic_info['dayHigh']), 3)
     st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {dayHigh}</p>", unsafe_allow_html=True)
   else:
    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with day_low:
   if 'dayLow'in basic_info:
-   dayLow = round(basic_info['dayLow'], 3)
+   dayLow = round(float(basic_info['dayLow']), 3)
    st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {dayLow}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with year_high:
   if 'yearHigh'in basic_info:
-    yearHigh = round(basic_info['yearHigh'], 3)
+    yearHigh = round(float(basic_info['yearHigh']), 3)
     st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {yearHigh}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with year_low:
   if 'yearLow'in basic_info:
-    yearLow = round(basic_info['yearLow'], 3)
+    yearLow = round(float(basic_info['yearLow']), 3)
     st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {yearLow}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
