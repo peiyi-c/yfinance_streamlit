@@ -14,8 +14,10 @@ st.markdown('<style>h3{font-size:1.65rem;opacity:0.3;}div.block-container{paddin
 # Title #   
 st.header('Stock Dashboard')  
 
-# initiate ticker
+# initiate 
+today = datetime.now().date()
 ticker = ''
+company = ''
 
 col1, col2 = st.columns((2))
 with col1:
@@ -39,7 +41,6 @@ st.subheader('Performance')
 
 # Tabs #
 one_day, one_week, one_month, one_year, max = st.tabs(['5 Days',' 1 Week',' 1 Month',' 1 Year', 'Max'])
-today = datetime.now().date()
 
 def get_past_date(value, units):
     if units == 'days':
@@ -121,20 +122,21 @@ with custom_period:
     interval = st.selectbox("Interval", ['1 Day', '5 Days', '1 Week', '1 Month', '3 Months'])
     
   def switch_inter(value):
-      if value == '1 Day':
-          return '1d'
-      elif value == '5 Days':
-          return '5d'
-      elif value == '1 Week':
-          return '1wk'
-      elif value == '1 Month':
-          return '1mo'
-      elif value == '3 Months':
-          return '3mo'
-      else:
-          return '1d'
+    if value == '1 Day':
+      return '1d'
+    elif value == '5 Days':
+      return '5d'
+    elif value == '1 Week':
+      return '1wk'
+    elif value == '1 Month':
+      return '1mo'
+    elif value == '3 Months':
+      return '3mo'
+    else:
+      return '1d'
 
   ticker = company.history(period='max', interval=switch_inter(interval), start=start_date, end=end_date)
+
   if ticker.empty:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
   else:
@@ -175,7 +177,8 @@ st.divider()
 # Subheader - Company Information # 
 st.subheader("Company Information")
 
-st.markdown(f"**Company Name:** { infos.get('longName', 'not available')}")
+if infos.get('longName') is not None:
+  st.markdown(f"**Company Name:** { infos.get('longName', '')}")
 if infos.get('sector') is not None:
   st.markdown(f"**Sector:** {infos.get('sector', '')}")
 if infos.get('website') is not None:
@@ -219,6 +222,7 @@ else:
       gross_profit = financials.loc['Gross Profit']
       gross_margin = gross_profit / revenue
       st.metric(label="Gross Margin 2023", value=f"$ {gross_margin.iloc[0]:.2%}")
+
   with col5: 
     if infos.get('totalRevenue') is not None:
      st.metric(label="Total Revenue", value=f"${ infos.get('totalRevenue', ''):,}")
@@ -226,11 +230,11 @@ else:
       st.metric(label="EBITDA", value=f"${ infos.get('ebitda', ''):,}")
     if infos.get('netIncomeToCommon') is not None:
      st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
-    if cashflow.loc['Free Cash Flow'][0] is not None:
+    if 'Free Cash Flow' in cashflow.index and cashflow.loc['Free Cash Flow'][0] is not None:
      free_cashflow = cashflow.loc['Free Cash Flow'][0]
      st.metric(label="Free Cash Flow", value=f"$ {int(free_cashflow):,}")
 
-  # Actions # 
+  # ============== Company Action ==============
   actions = company.actions
   if not actions.empty:
     st.markdown("<p style='margin-bottom: 7px;font-size:14px; color:rgb(49, 51, 6);'>Acitons</p>", unsafe_allow_html=True)
