@@ -106,11 +106,8 @@ with max:
 
 st.divider()
 
-# =========== Company Basic Info ==========
-basic_info = company.basic_info
-
 # Tabs #
-custom_period, day_high, day_low, year_high, year_low = st.tabs(['Custom Period','Day High',' Day Low',' Year High','Year Low'])
+custom_period, day_high, day_low, fiftyTwo_high, fiftyTwo_low = st.tabs(['Custom Period','Day High',' Day Low','52 Week High','52 Week Low'])
 with custom_period:
   col1, col2, col3 = st.columns((3))
   with col1:
@@ -146,7 +143,7 @@ with custom_period:
 
 with day_high:
   if 'dayHigh'in infos:
-    dayHigh = round(float(basic_info['dayHigh']), 3)
+    dayHigh = round(float(infos['dayHigh']), 3)
     st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {dayHigh}</p>", unsafe_allow_html=True)
   else:
    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
@@ -158,17 +155,17 @@ with day_low:
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
-with year_high:
-  if 'yearHigh'in basic_info:
-    yearHigh = round(float(company.basic_info['yearHigh']), 3)
-    st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {yearHigh}</p>", unsafe_allow_html=True)
+with fiftyTwo_high:
+  if 'fiftyTwoWeekHigh'in infos:
+    fiftyTwoWeekHigh = round(float(infos['fiftyTwoWeekHigh']), 3)
+    st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {fiftyTwoWeekHigh}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
-with year_low:
-  if 'yearLow'in basic_info:
-    yearLow = round(float(basic_info['yearLow']), 3)
-    st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {yearLow}</p>", unsafe_allow_html=True)
+with fiftyTwo_low:
+  if 'fiftyTwoWeekLow'in infos:
+    fiftyTwoWeekLow = round(float(infos['fiftyTwoWeekLow']), 3)
+    st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {fiftyTwoWeekLow}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
@@ -183,6 +180,8 @@ if infos.get('sector') is not None:
   st.markdown(f"**Sector:** {infos.get('sector', '')}")
 if infos.get('website') is not None:
   st.markdown(f"**Website:** {infos.get('website', '')}")
+if infos.get('irWebsite') is not None:
+  st.markdown(f"**IR Website:** {infos.get('irWebsite', '')}")
 if infos.get('address1') is not None:
   st.markdown("<p style='margin-bottom:0;font-weight:600;'>Address:</p>", unsafe_allow_html=True)
 st.markdown(f"<span>{infos.get('address1', '')}<br/> {infos.get('city', '')}<br/> {infos.get('state', '')}  {infos.get('zip', '')}  {infos.get('country', '')}</span>", unsafe_allow_html=True)
@@ -199,7 +198,7 @@ if 'logo_url' in company.info:
 st.divider()
 
 # ============== Company Fin ==============
-financials = company.financials
+#financials = company.financials
 cashflow = company.cashflow
 # =========================================
 
@@ -213,15 +212,14 @@ else:
   with col4:
     if infos.get('marketCap') is not None:
       st.metric(label="Market Cap", value=f"$ {infos.get('marketCap', ''):,}")
-    if infos.get('fiftyTwoWeekHigh') is not None:
-      st.metric(label="52 Week High", value=f"$ {infos.get('fiftyTwoWeekHigh', ''):,}")
-    if infos.get('fiftyTwoWeekLow') is not None:
-      st.metric(label="52 Week Low", value=f"$ {infos.get('fiftyTwoWeekLow', ''):,}")
-    if 'Total Revenue' in financials.index and 'Gross Profit' in financials.index: 
-      revenue = financials.loc['Total Revenue']
-      gross_profit = financials.loc['Gross Profit']
-      gross_margin = gross_profit / revenue
-      st.metric(label="Gross Margin 2023", value=f"$ {gross_margin.iloc[0]:.2%}")
+    if infos.get('fiftyDayAverage') is not None:
+      st.metric(label="50 Day Average", value=f"$ {infos.get('fiftyDayAverage', ''):,}")
+    if infos.get('profitMargins') is not None:
+      profitMargins = round((infos.get('profitMargins', '') * 100), 2)
+      st.metric(label="Profit Margins", value=f"{profitMargins} %")
+    if infos.get('grossMargins') is not None:
+      grossMargins = round((infos.get('grossMargins', '') * 100), 2)
+      st.metric(label="Gross Margins", value=f"{grossMargins} %")
 
   with col5: 
     if infos.get('totalRevenue') is not None:
@@ -232,17 +230,10 @@ else:
      st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
     if infos.get('freeCashflow') is not None:
      st.metric(label="Free Cash Flow", value=f"$ {infos.get('freeCashflow', ''):,}")
+    if infos.get('lastDividendValue') is not None and infos.get('lastDividendDate') is not None:
+     lastDividendDate = datetime.utcfromtimestamp(infos.get('lastDividendDate')).date()
+     lastDividendValue = round((infos.get('lastDividendValue', '')), 2)
+     st.metric(label=f"Last Dividend {lastDividendDate}", value=f"$ {lastDividendValue}")
+  
 
-  # ============== Company Action ==============
-  actions = company.actions
-  if not actions.empty:
-    st.markdown("<p style='margin-bottom: 7px;font-size:14px; color:rgb(49, 51, 6);'>Acitons</p>", unsafe_allow_html=True)
-    #format table..
-    actions.index = actions.index.date
-    actions['Dividends'] = actions['Dividends'].apply(lambda x: f"$ {x:.2f}")
-    actions['Stock Splits'] = actions['Stock Splits'].astype(int)
-    st.write(actions)
-
-st.write(basic_info)
-st.write(financials)
-st.write(infos)
+#st.write(infos)
