@@ -5,40 +5,36 @@ import plotly.express as px
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-# page setup
+# ============= PAGE SETUP =============
 st.set_page_config(page_title="Stock Dashboard", page_icon="🧊", layout="centered")
 
-# custom styles
+# ============ CSS STYLES ==============
 st.markdown('<style>h3{font-size:1.65rem;opacity:0.3;}div.block-container{padding:1rem auto;} div.element-container{margin: 0rem; padding: 0rem;}div[role="tablist"]{justify-content: space-between;}button[role="tab"]{padding: 1rem; border-radius: 10px;}button[role="tab"][aria-selected="true"]{background: #E0FBE2;}button[role="tab"] p, summary{color:#333333; font-weight:600;} summary:hover span{color:#ACE1AF; font-weight:bold;} div[role="presentation"]{background:none;} div[role="alert"]{padding:1.2rem 2.2rem;background:#F6F5F250;color:#333333;line-height: 1.7;} a{color:rgb(49, 51, 63) !important; text-decoration:none;} a:hover{color:#ACE1AF !important; text-decoration:none;} div[data-baseweb="select"]>div{border-color: #D2E9E9 !important; box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;}div[data-testid="stTable"]{padding: 7px 0 0 0;}table{font-family:"Source Sans Pro", sans-serif;text-align:left;border-radius: 10px;}.no-data{padding: 1.75rem 0;text-align: left; color: rgb(49, 51, 63); font-weight: bold;} .tab-num{font-size: 2.25rem; color: rgb(49, 51, 63);}</style>', unsafe_allow_html = True)
 
 # Title #   
-st.subheader('Stock Dashboard')  
+st.header('Stock Dashboard')  
 
-col1, col2 = st.columns((2))
-# Selectbox: Ticker #
-
+# initiate ticker
 ticker = ''
 
+col1, col2 = st.columns((2))
 with col1:
   ticker_name_list = pd.read_csv('./ticker_names.txt')
   ticker = st.selectbox('Select a Stock', ticker_name_list) 
 
-# ============= Retrieve Data ==============
+# ============ Company Data ============
 company = yf.Ticker(ticker) 
-# ============== Company Data ==============
+
+# ============ Company Info ============
 infos = company.info
-basic_info = company.basic_info
-financials = company.financials
-cashflow = company.cashflow
- # =========================================
- 
+
 # Current Price #
 col2.metric("Current Price", f"${infos.get('currentPrice', '')}")
 
 # Company name # 
 st.title(infos.get('longName', ''))
 
-# 1. Subheader # 
+# Subheader - Performance # 
 st.subheader('Performance')
 
 # Tabs #
@@ -109,6 +105,8 @@ with max:
 
 st.divider()
 
+# =========== Company Basic Info ==========
+basic_info = company.basic_info
 
 # Tabs #
 custom_period, day_high, day_low, year_high, year_low = st.tabs(['Custom Period','Day High',' Day Low',' Year High','Year Low'])
@@ -168,12 +166,11 @@ with year_low:
   else:
     st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {round(basic_info['yearLow'], 3)}</p>", unsafe_allow_html=True)
 
-
-# Divider #
 st.divider()
 
-# Display company basic information
+# Subheader - Company Information # 
 st.subheader("Company Information")
+
 st.markdown(f"**Company Name:** { infos.get('longName', 'not available')}")
 if infos.get('sector') is not None:
   st.markdown(f"**Sector:** {infos.get('sector', '')}")
@@ -194,8 +191,14 @@ if 'logo_url' in company.info:
 # Divider #
 st.divider()
 
-# Key Metrics # 
+# ============== Company Fin ==============
+financials = company.financials
+cashflow = company.cashflow
+# =========================================
+
+# Subheader - Key Metrics # 
 st.subheader("Key Metrics")
+
 if ticker.empty:
   st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 else:
@@ -207,7 +210,7 @@ else:
       st.metric(label="52 Week High", value=f"$ {infos.get('fiftyTwoWeekHigh', ''):,}")
     if infos.get('fiftyTwoWeekLow') is not None:
       st.metric(label="52 Week Low", value=f"$ {infos.get('fiftyTwoWeekLow', ''):,}")
-    if financials.loc['Total Revenue'] is not None and financials.loc['Gross Profit'] is not None: 
+    if 'Total Revenue' in financials.index and 'Gross Profit' in financials.index: 
       revenue = financials.loc['Total Revenue']
       gross_profit = financials.loc['Gross Profit']
       gross_margin = gross_profit / revenue
