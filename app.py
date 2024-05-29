@@ -146,15 +146,15 @@ with custom_period:
 
 with day_high:
   if 'dayHigh'in basic_info:
-    dayHigh = round(float(basic_info['dayHigh']), 3)
-    st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {dayHigh}</p>", unsafe_allow_html=True)
+    #dayHigh = int(basic_info['dayHigh'])
+    st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {basic_info['dayHigh']}</p>", unsafe_allow_html=True)
   else:
    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with day_low:
   if 'dayLow'in basic_info:
-   dayLow = round(float(basic_info['dayLow']), 3)
-   st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {dayLow}</p>", unsafe_allow_html=True)
+   dayLow = float(basic_info['dayLow'])
+   st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {round(dayLow, 2)}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
