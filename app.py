@@ -143,28 +143,32 @@ with custom_period:
     st.plotly_chart(fig, use_container_width = True)
 
 with day_high:
-  if ticker.empty:
-    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
+  if 'dayHigh'in basic_info:
+    dayHigh = round(basic_info['dayHigh'], 3)
+    st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {dayHigh}</p>", unsafe_allow_html=True)
   else:
-   st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {round(basic_info['dayHigh'], 3)}</p>", unsafe_allow_html=True)
+   st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with day_low:
-  if ticker.empty:
-    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
+  if 'dayLow'in basic_info:
+   dayLow = round(basic_info['dayLow'], 3)
+   st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {dayLow}</p>", unsafe_allow_html=True)
   else:
-    st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {round(basic_info['dayLow'], 3)}</p>", unsafe_allow_html=True)
+    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with year_high:
-  if ticker.empty:
-    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
+  if 'yearHigh'in basic_info:
+    yearHigh = round(basic_info['yearHigh'], 3)
+    st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {yearHigh}</p>", unsafe_allow_html=True)
   else:
-    st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {round(basic_info['yearHigh'], 3)}</p>", unsafe_allow_html=True)
+    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with year_low:
-  if ticker.empty:
-    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
+  if 'yearLow'in basic_info:
+    yearLow = round(basic_info['yearLow'], 3)
+    st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {yearLow}</p>", unsafe_allow_html=True)
   else:
-    st.markdown(f"<p class='tab-num' style='text-align: right;'>$ {round(basic_info['yearLow'], 3)}</p>", unsafe_allow_html=True)
+    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 st.divider()
 
