@@ -145,22 +145,22 @@ with custom_period:
     st.plotly_chart(fig, use_container_width = True)
 
 with day_high:
-  if 'dayHigh'in basic_info:
-    #dayHigh = int(basic_info['dayHigh'])
-    st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {basic_info['dayHigh']}</p>", unsafe_allow_html=True)
+  if 'dayHigh'in infos:
+    dayHigh = round(float(basic_info['dayHigh']), 3)
+    st.markdown(f"<p class='tab-num' style='width:40%; text-align:right;'>$ {dayHigh}</p>", unsafe_allow_html=True)
   else:
    st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with day_low:
-  if 'dayLow'in basic_info:
-   dayLow = float(basic_info['dayLow'])
-   st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {round(dayLow, 2)}</p>", unsafe_allow_html=True)
+  if 'dayLow'in infos:
+   dayLow = round(float(infos['dayLow']), 3)
+   st.markdown(f"<p class='tab-num' style='width:60%; text-align:right;'>$ {dayLow}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 
 with year_high:
   if 'yearHigh'in basic_info:
-    yearHigh = round(float(basic_info['yearHigh']), 3)
+    yearHigh = round(float(company.basic_info['yearHigh']), 3)
     st.markdown(f"<p class='tab-num' style='width:80%; text-align:right;'>$ {yearHigh}</p>", unsafe_allow_html=True)
   else:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
@@ -230,9 +230,8 @@ else:
       st.metric(label="EBITDA", value=f"${ infos.get('ebitda', ''):,}")
     if infos.get('netIncomeToCommon') is not None:
      st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
-    if 'Free Cash Flow' in cashflow.index and cashflow.loc['Free Cash Flow'][0] is not None:
-     free_cashflow = cashflow.loc['Free Cash Flow'][0]
-     st.metric(label="Free Cash Flow", value=f"$ {int(free_cashflow):,}")
+    if infos.get('freeCashflow') is not None:
+     st.metric(label="Free Cash Flow", value=f"$ {infos.get('freeCashflow', ''):,}")
 
   # ============== Company Action ==============
   actions = company.actions
@@ -243,3 +242,7 @@ else:
     actions['Dividends'] = actions['Dividends'].apply(lambda x: f"$ {x:.2f}")
     actions['Stock Splits'] = actions['Stock Splits'].astype(int)
     st.write(actions)
+
+st.write(basic_info)
+st.write(financials)
+st.write(infos)
