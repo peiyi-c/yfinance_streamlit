@@ -32,7 +32,7 @@ company = yf.Ticker(ticker)
 infos = company.info
 
 # Current Price #
-col2.metric("Current Price", f"${infos.get('currentPrice', '')}")
+col2.metric("Current Price", f"$ {infos.get('currentPrice', '')}")
 
 # Company name # 
 st.title(infos.get('longName', ''))
@@ -41,7 +41,7 @@ st.title(infos.get('longName', ''))
 st.subheader('Performance')
 
 # Tabs #
-one_day, one_week, one_month, one_year, max = st.tabs(['5 Days',' 1 Week',' 1 Month',' 1 Year', 'Max'])
+one_day, one_week, one_month, one_year, max = st.tabs(['2 Days',' 1 Week',' 1 Month',' 1 Year', 'Max'])
 
 def get_past_date(value, units):
     if units == 'days':
@@ -61,11 +61,11 @@ def update_axis_names(fig, x_axis_name, y_axis_name):
     return fig
 
 with one_day:
- ticker = company.history(period='1d', start=get_past_date(5, 'days'), end=today) 
+ ticker = company.history(period='5d', start=get_past_date(5, 'days'), end=today) 
  if ticker.empty:
     st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
  else: 
-   fig = px.line(ticker, x = ticker.index, y = ticker['Close'], title = '5 Days')
+   fig = px.line(ticker, x = ticker.index, y = ticker['Close'], title = '2 Days')
    update_axis_names(fig, 'Hour', 'Close Price')
    st.plotly_chart(fig, use_container_width = True)
 
@@ -263,7 +263,7 @@ else:
       st.metric(label="Revenue Growth", value=f"{revenueGrowth} %")
     if infos.get('trailingPE') is not None:
       trailingPE = round((infos.get('trailingPE', '')), 2)
-      st.metric(label="Trailing PE", value=f"$ {trailingPE}")  
+      st.metric(label="Trailing PE", value=f"{trailingPE}")  
 
 # Divider #
 st.divider()
