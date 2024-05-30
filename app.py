@@ -5,6 +5,7 @@ import plotly.express as px
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
+
 # ============= PAGE SETUP =============
 st.set_page_config(page_title="Stock Dashboard", page_icon="🧊", layout="centered")
 
@@ -178,10 +179,10 @@ if infos.get('longName') is not None:
   st.markdown(f"**Company Name:** { infos.get('longName', '')}")
 if infos.get('sector') is not None:
   st.markdown(f"**Sector:** {infos.get('sector', '')}")
-if infos.get('website') is not None:
-  st.markdown(f"**Website:** {infos.get('website', '')}")
-if infos.get('irWebsite') is not None:
-  st.markdown(f"**IR Website:** {infos.get('irWebsite', '')}")
+if infos.get('website') is not None and infos.get('irWebsite') is None:
+  st.markdown(f"**Website:** [Company Website]({infos.get('website', '')})")
+if infos.get('website') is not None and infos.get('irWebsite') is not None:
+  st.markdown(f"**Websites:** [Company Website]({infos.get('website', '')}) | [Invester Relations Website]({infos.get('irWebsite', '')})")
 if infos.get('address1') is not None:
   st.markdown("<p style='margin-bottom:0;font-weight:600;'>Address:</p>", unsafe_allow_html=True)
 st.markdown(f"<span>{infos.get('address1', '')}<br/> {infos.get('city', '')}<br/> {infos.get('state', '')}  {infos.get('zip', '')}  {infos.get('country', '')}</span>", unsafe_allow_html=True)
@@ -198,8 +199,8 @@ if 'logo_url' in company.info:
 st.divider()
 
 # ============== Company Fin ==============
-#financials = company.financials
-cashflow = company.cashflow
+financials = company.financials
+#cashflow = company.cashflow
 # =========================================
 
 # Subheader - Key Metrics # 
@@ -209,31 +210,77 @@ if ticker.empty:
   st.markdown("<p class='no-data'>No Data available</p>", unsafe_allow_html=True)
 else:
   col4, col5 = st.columns((2))
+
   with col4:
     if infos.get('marketCap') is not None:
       st.metric(label="Market Cap", value=f"$ {infos.get('marketCap', ''):,}")
-    if infos.get('fiftyDayAverage') is not None:
-      st.metric(label="50 Day Average", value=f"$ {infos.get('fiftyDayAverage', ''):,}")
+    if infos.get('freeCashflow') is not None:
+     st.metric(label="Free Cash Flow", value=f"$ {infos.get('freeCashflow', ''):,}")
+    if infos.get('totalRevenue') is not None:
+     st.metric(label="Total Revenue", value=f"${ infos.get('totalRevenue', ''):,}")
+
+  with col5: 
+    if infos.get('ebitda') is not None:
+      st.metric(label="EBITDA", value=f"${ infos.get('ebitda', ''):,}")
+    if infos.get('operatingCashflow') is not None:
+     st.metric(label="Operating Cash Flow", value=f"$ {infos.get('operatingCashflow', ''):,}")
+    if infos.get('netIncomeToCommon') is not None:
+     st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
+
+  # Divider #
+  st.divider()
+
+  col6, col7, col8 = st.columns((3))
+  with col6:
     if infos.get('profitMargins') is not None:
       profitMargins = round((infos.get('profitMargins', '') * 100), 2)
       st.metric(label="Profit Margins", value=f"{profitMargins} %")
     if infos.get('grossMargins') is not None:
       grossMargins = round((infos.get('grossMargins', '') * 100), 2)
       st.metric(label="Gross Margins", value=f"{grossMargins} %")
-
-  with col5: 
-    if infos.get('totalRevenue') is not None:
-     st.metric(label="Total Revenue", value=f"${ infos.get('totalRevenue', ''):,}")
-    if infos.get('ebitda') is not None:
-      st.metric(label="EBITDA", value=f"${ infos.get('ebitda', ''):,}")
-    if infos.get('netIncomeToCommon') is not None:
-     st.metric(label="Net Income", value=f"$ {infos.get('netIncomeToCommon', ''):,}")
-    if infos.get('freeCashflow') is not None:
-     st.metric(label="Free Cash Flow", value=f"$ {infos.get('freeCashflow', ''):,}")
     if infos.get('lastDividendValue') is not None and infos.get('lastDividendDate') is not None:
      lastDividendDate = datetime.utcfromtimestamp(infos.get('lastDividendDate')).date()
      lastDividendValue = round((infos.get('lastDividendValue', '')), 2)
      st.metric(label=f"Last Dividend {lastDividendDate}", value=f"$ {lastDividendValue}")
-  
 
-#st.write(infos)
+  with col7:
+    if infos.get('ebitdaMargins') is not None:
+      ebitdaMargins = round((infos.get('ebitdaMargins', '') * 100), 2)
+      st.metric(label="EBITDA Margins", value=f"{ebitdaMargins} %")
+    if infos.get('operatingMargins') is not None:
+      operatingMargins = round((infos.get('operatingMargins', '') * 100), 2)
+      st.metric(label="Operating Margins", value=f"{operatingMargins} %")
+    if infos.get('trailingEps') is not None:
+      trailingEps = round((infos.get('trailingEps', '')), 2)
+      st.metric(label="Trailing EPS", value=f"$ {trailingEps}")  
+
+  with col8:
+    if infos.get('earningsGrowth') is not None:
+      earningsGrowth = round((infos.get('earningsGrowth', '') * 100), 2)
+      st.metric(label="Earnings Growth", value=f"{earningsGrowth} %")
+    if infos.get('revenueGrowth') is not None:
+      revenueGrowth = round((infos.get('revenueGrowth', '') * 100), 2)
+      st.metric(label="Revenue Growth", value=f"{revenueGrowth} %")
+    if infos.get('trailingPE') is not None:
+      trailingPE = round((infos.get('trailingPE', '')), 2)
+      st.metric(label="Trailing PE", value=f"$ {trailingPE}")  
+
+# Divider #
+st.divider()
+
+# Subheader - Analysis # 
+st.subheader("Analysis")
+
+financials_df = pd.DataFrame(financials)
+
+financials1_check = ['Gross Profit', 'Cost Of Revenue', 'Operating Revenue']
+if(all(metric in financials_df.index for metric in financials1_check)):
+  short_financials1 = financials_df.loc[['Gross Profit', 'Cost Of Revenue', 'Operating Revenue']].transpose().dropna()
+  line1 = px.line(short_financials1, x=short_financials1.index, y=['Gross Profit', 'Cost Of Revenue', 'Operating Revenue'], title='Revenue History')
+  st.write(line1)
+
+financials2_check = ['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses']
+if(all(metric in financials_df.index for metric in financials2_check)):
+  short_financials2 = financials_df.loc[['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses']].transpose().dropna()
+  line2 = px.line(short_financials2, x=short_financials2.index, y=['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses'], title='Income and Expense History')
+  st.write(line2)
