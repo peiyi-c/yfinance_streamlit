@@ -277,10 +277,10 @@ financials1_check = ['Gross Profit', 'Cost Of Revenue', 'Operating Revenue']
 if(all(metric in financials_df.index for metric in financials1_check)):
   short_financials1 = financials_df.loc[['Gross Profit', 'Cost Of Revenue', 'Operating Revenue']].transpose().dropna()
   line1 = px.line(short_financials1, x=short_financials1.index, y=['Gross Profit', 'Cost Of Revenue', 'Operating Revenue'], title='Revenue History')
-  st.write(line1)
+  st.write(update_axis_names(line1, 'Time', 'Value'))
 
 financials2_check = ['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses']
 if(all(metric in financials_df.index for metric in financials2_check)):
   short_financials2 = financials_df.loc[['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses']].transpose().dropna()
   line2 = px.line(short_financials2, x=short_financials2.index, y=['Total Revenue','Net Income','Operating Income', 'Operating Expense','Interest Expense', 'Total Expenses'], title='Income and Expense History')
-  st.write(line2)
+  st.write(update_axis_names(line2, 'Time', 'Value'))
